@@ -13,9 +13,10 @@ const MainTab = createBottomTabNavigator();
 
 import LoginScreen from "./Screens/LoginScreen";
 import RegistrationScreen from "./Screens/RegistrationScreen";
-import CommentsScreen from "./Screens/CommentsScreen";
+import CommentsScreen from "./Screens/nestedScreens/CommentsScreen";
 import CreatePostsScreen from "./Screens/CreatePostsScreen";
 import PostsScreen from "./Screens/PostsScreen";
+import ProfileScreen from "./Screens/ProfileScreen";
 
 export const useRoute = (isAuth) => {
   if (!isAuth) {
@@ -88,9 +89,9 @@ export const useRoute = (isAuth) => {
       />
 
       <MainTab.Screen
-        name="Comments"
+        name="ProfileScreen"
         options={{
-          title: "Коментарі",
+          title: "Профіль",
           headerTitleAlign: "center",
           tabBarShowLabel: false,
           tabBarItemStyle: { alignItems: "flex-start" },
@@ -98,7 +99,7 @@ export const useRoute = (isAuth) => {
             <AntDesign name="user" size={24} color={color} />
           ),
         }}
-        component={CommentsScreen}
+        component={ProfileScreen}
       />
     </MainTab.Navigator>
   );

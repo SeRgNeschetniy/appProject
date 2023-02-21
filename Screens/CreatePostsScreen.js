@@ -14,6 +14,7 @@ import {
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -21,6 +22,8 @@ const initialState = {
   photo: null,
   title: "",
   location: "",
+  latitude: "",
+  longitude: "",
 };
 
 export default function CreatePostsScreen({ navigation }) {
@@ -39,6 +42,15 @@ export default function CreatePostsScreen({ navigation }) {
     })();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
+    })();
+  }, []);
+
   if (hasPermission === null) {
     return <View />;
   }
@@ -48,12 +60,19 @@ export default function CreatePostsScreen({ navigation }) {
 
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
-    setstate((prevState) => ({ ...prevState, photo: photo.uri }));
+    const location = await Location.getCurrentPositionAsync();
+
+    setstate((prevState) => ({
+      ...prevState,
+      photo: photo.uri,
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    }));
   };
 
   const sendPost = () => {
     console.log("photo", state);
-    navigation.navigate("Posts", state);
+    navigation.navigate("DefaultScreen", state);
   };
 
   const keyboardHide = () => {
@@ -125,8 +144,11 @@ export default function CreatePostsScreen({ navigation }) {
               setstate((prevState) => ({ ...prevState, title: value }))
             }
           />
+
           <TextInput
             style={{ ...styles.input, marginBottom: 32 }}
+            inlineImageLeft="search_icon"
+            inlineImagePadding={2}
             placeholder="Місцевість..."
             value={state.location}
             onChangeText={(value) =>
@@ -191,5 +213,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 16,
+  },
+  iconImput: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderWidth: 0.5,
+    borderColor: "#000",
+    height: 40,
+    borderRadius: 5,
+    margin: 10,
+    flex: 1,
+  },
+  icon: {
+    padding: 10,
+    margin: 5,
+    resizeMode: "stretch",
+    alignItems: "center",
   },
 });
