@@ -65,6 +65,7 @@ export const useRoute = (isAuth) => {
         options={{
           title: "Створити публікацію",
           headerTitleAlign: "center",
+          tabBarShowLabel: false,
           tabBarIcon: ({ color }) => (
             <AntDesign name="plus" size={24} color={color} />
           ),
@@ -77,6 +78,7 @@ export const useRoute = (isAuth) => {
         options={{
           title: "Коментарі",
           headerTitleAlign: "center",
+          tabBarShowLabel: false,
           tabBarIcon: ({ color }) => (
             <AntDesign name="user" size={24} color={color} />
           ),
