@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useRoute } from "./router";
 
 export default function App() {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
   const routing = useRoute(isLogin);
 
   const login = (prop) => {

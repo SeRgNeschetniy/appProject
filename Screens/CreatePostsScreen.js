@@ -13,6 +13,7 @@ import {
 
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
+import * as ImagePicker from "expo-image-picker";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -60,6 +61,20 @@ export default function CreatePostsScreen({ navigation }) {
     Keyboard.dismiss();
   };
 
+  const handleChooseImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setstate((prevState) => ({
+        ...prevState,
+        photo: result.assets[0].uri,
+      }));
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
@@ -91,6 +106,13 @@ export default function CreatePostsScreen({ navigation }) {
             <Ionicons name="camera" size={24} color="#fff" />
           </TouchableOpacity>
         </Camera>
+
+        <TouchableOpacity
+          style={{ marginBottom: 32 }}
+          onPress={handleChooseImage}
+        >
+          <Text style={{ color: "#BDBDBD" }}>Завантажити фото</Text>
+        </TouchableOpacity>
 
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -135,7 +157,7 @@ const styles = StyleSheet.create({
     height: 240,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 60,
+    marginBottom: 8,
   },
   snapContainer: {
     backgroundColor: "rgba(255, 255, 255, 0.3)",
