@@ -24,8 +24,26 @@ const initialState = {
 
 export default function CreatePostsScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
   const [camera, setCamera] = useState(null);
   const [state, setstate] = useState(initialState);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
+
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
 
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
@@ -34,7 +52,7 @@ export default function CreatePostsScreen({ navigation }) {
 
   const sendPost = () => {
     console.log("photo", state);
-    navigation.navigate("Posts", { state });
+    navigation.navigate("Posts", state);
   };
 
   const keyboardHide = () => {
@@ -45,7 +63,7 @@ export default function CreatePostsScreen({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
-        <Camera style={styles.camera} ref={setCamera}>
+        <Camera style={styles.camera} type={type} ref={setCamera}>
           {state.photo && (
             <View style={styles.takePhotoContainer}>
               <Image
@@ -54,6 +72,21 @@ export default function CreatePostsScreen({ navigation }) {
               />
             </View>
           )}
+          {/* <TouchableOpacity
+            style={styles.flipContainer}
+            onPress={() => {
+              setType(
+                type === Camera.Constants.Type.back
+                  ? Camera.Constants.Type.front
+                  : Camera.Constants.Type.back
+              );
+            }}
+          >
+            <Text style={{ fontSize: 18, marginBottom: 10, color: "white" }}>
+              {" "}
+              Flip{" "}
+            </Text>
+          </TouchableOpacity> */}
           <TouchableOpacity onPress={takePhoto} style={styles.snapContainer}>
             <Ionicons name="camera" size={24} color="#fff" />
           </TouchableOpacity>
