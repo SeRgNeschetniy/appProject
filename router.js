@@ -2,6 +2,9 @@ import React from "react";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import { TouchableOpacity } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -13,7 +16,6 @@ import RegistrationScreen from "./Screens/RegistrationScreen";
 import CommentsScreen from "./Screens/CommentsScreen";
 import CreatePostsScreen from "./Screens/CreatePostsScreen";
 import PostsScreen from "./Screens/PostsScreen";
-import { Button, TouchableOpacity } from "react-native";
 
 export const useRoute = (isAuth) => {
   if (!isAuth) {
@@ -41,6 +43,7 @@ export const useRoute = (isAuth) => {
           title: "Публікації",
           headerTitleAlign: "center",
           tabBarShowLabel: false,
+          tabBarItemStyle: { alignItems: "flex-end" },
           headerRight: () => (
             <TouchableOpacity
             // onPress={() => setIsLogin(false)}
@@ -79,6 +82,7 @@ export const useRoute = (isAuth) => {
           title: "Коментарі",
           headerTitleAlign: "center",
           tabBarShowLabel: false,
+          tabBarItemStyle: { alignItems: "flex-start" },
           tabBarIcon: ({ color }) => (
             <AntDesign name="user" size={24} color={color} />
           ),
