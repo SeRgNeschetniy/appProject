@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import LoginScreen from "./Screens/LoginScreen";
-import RegistrationScreen from "./Screens/RegistrationScreen";
+import { NavigationContainer } from "@react-navigation/native";
+import { useRoute } from "./router";
 
 export default function App() {
-  return (
-    <>
-      {/* <RegistrationScreen /> */}
-      <LoginScreen />
-    </>
-  );
+  const [isLogin, setIsLogin] = useState(true);
+  const routing = useRoute(isLogin);
+
+  const login = (prop) => {
+    setIsLogin(prop);
+  };
+
+  return <NavigationContainer>{routing}</NavigationContainer>;
 }

@@ -24,7 +24,7 @@ const initialState = {
   password: "",
 };
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setstate] = useState(initialState);
 
@@ -48,8 +48,9 @@ export default function LoginScreen() {
     Keyboard.dismiss();
   };
 
-  const onLogin = () => {
+  const onHandleSubmit = () => {
     console.log(state);
+    navigation.navigate("Home");
   };
 
   return (
@@ -90,11 +91,14 @@ export default function LoginScreen() {
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.button}
-                onPress={onLogin}
+                onPress={onHandleSubmit}
               >
                 <Text style={styles.textButton}>Войти</Text>
               </TouchableOpacity>
-              <Text style={styles.singin}>
+              <Text
+                style={styles.singin}
+                onPress={() => navigation.navigate("Registration")}
+              >
                 Нет аккаунта? Зарегистрироваться
               </Text>
             </View>

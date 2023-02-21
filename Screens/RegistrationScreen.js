@@ -25,7 +25,7 @@ const initialState = {
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RegistrationScreen() {
+export default function RegistrationScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setstate] = useState(initialState);
 
@@ -49,8 +49,9 @@ export default function RegistrationScreen() {
     Keyboard.dismiss();
   };
 
-  const onRegister = () => {
+  const onHandleSubmit = () => {
     console.log(state);
+    navigation.navigate("Home", { screen: "Posts" });
   };
 
   return (
@@ -100,11 +101,16 @@ export default function RegistrationScreen() {
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.button}
-                onPress={onRegister}
+                onPress={onHandleSubmit}
               >
                 <Text style={styles.textButton}>Зарегистрироваться</Text>
               </TouchableOpacity>
-              <Text style={styles.singin}>Уже есть аккаунт? Войти</Text>
+              <Text
+                style={styles.singin}
+                onPress={() => navigation.navigate("Login")}
+              >
+                Уже есть аккаунт? Войти
+              </Text>
             </View>
           </View>
         </ImageBackground>
