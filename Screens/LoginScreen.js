@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 0.6,
+    alignItems: "center",
     backgroundColor: "#fff",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
@@ -143,6 +144,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     fontSize: 16,
     color: "#BDBDBD",
+    width: 343,
   },
   button: {
     backgroundColor: "#FF6C00",
@@ -150,6 +152,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 16,
+    width: 343,
   },
   textButton: {
     fontSize: 16,

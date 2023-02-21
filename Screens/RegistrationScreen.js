@@ -11,15 +11,20 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from "react-native";
 
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
+import * as ImagePicker from "expo-image-picker";
+import { AntDesign } from "@expo/vector-icons";
+
 const initialState = {
   login: "",
   email: "",
   password: "",
+  avatar: null,
 };
 
 SplashScreen.preventAutoHideAsync();
@@ -53,6 +58,23 @@ export default function RegistrationScreen({ navigation }) {
     navigation.navigate("Home", { screen: "Posts" });
   };
 
+  const handleChooseAvatars = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [3, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setstate((prevState) => ({ ...prevState, avatar: result.assets[0].uri }));
+    }
+  };
+
+  const handleDeleteAvatars = () => {
+    setstate((prevState) => ({ ...prevState, avatar: null }));
+  };
+
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container} onLayout={onLayoutRootView}>
@@ -61,6 +83,32 @@ export default function RegistrationScreen({ navigation }) {
           source={require("../assets/bg.jpg")}
         >
           <View style={styles.form}>
+            <View style={styles.avatar}>
+              {state.avatar && (
+                <Image
+                  source={{ uri: state.avatar }}
+                  style={{ width: 120, height: 120 }}
+                />
+              )}
+              {state.avatar ? (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.avatarBtn}
+                  onPress={handleDeleteAvatars}
+                >
+                  <AntDesign name="closecircleo" size={24} color="#E8E8E8" />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.avatarBtn}
+                  onPress={handleChooseAvatars}
+                >
+                  <AntDesign name="pluscircleo" size={24} color="#FF6C00" />
+                </TouchableOpacity>
+              )}
+            </View>
+
             <Text style={styles.title}>Реєстрація</Text>
             <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -122,9 +170,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-
-    // alignItems: "center",
-    // justifyContent: "center",
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    backgroundColor: "#F6F6F6",
+    position: "absolute",
+    top: -60,
+    borderRadius: 16,
+  },
+  avatarBtn: {
+    position: "absolute",
+    bottom: 14,
+    right: -12,
   },
   image: {
     flex: 1,
@@ -133,6 +191,7 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 0.67,
+    alignItems: "center",
     backgroundColor: "#fff",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
@@ -143,7 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
-    paddingTop: 92,
+    marginTop: 92,
     marginBottom: 33,
   },
   input: {
@@ -155,6 +214,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     fontSize: 16,
     color: "#BDBDBD",
+    width: 343,
   },
   button: {
     backgroundColor: "#FF6C00",
@@ -162,6 +222,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 16,
+    width: 343,
   },
   textButton: {
     fontSize: 16,
