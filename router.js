@@ -18,6 +18,7 @@ import CreatePostsScreen from "./Screens/CreatePostsScreen";
 import PostsScreen from "./Screens/PostsScreen";
 import ProfileScreen from "./Screens/ProfileScreen";
 import { authSignOutUser } from "./redux/auth/authOperation";
+import { useDispatch } from "react-redux";
 
 export const useRoute = (isAuth) => {
   if (!isAuth) {
@@ -36,6 +37,10 @@ export const useRoute = (isAuth) => {
       </MainStack.Navigator>
     );
   }
+  const dispatch = useDispatch();
+  const signOut = () => {
+    dispatch(authSignOutUser());
+  };
 
   return (
     <MainTab.Navigator>
@@ -47,7 +52,7 @@ export const useRoute = (isAuth) => {
           tabBarShowLabel: false,
           tabBarItemStyle: { alignItems: "flex-end" },
           headerRight: () => (
-            <TouchableOpacity onPress={() => authSignOutUser()}>
+            <TouchableOpacity onPress={signOut}>
               <Ionicons
                 style={{ marginRight: 16 }}
                 name="exit-outline"
