@@ -70,7 +70,18 @@ export const useRoute = (isAuth) => {
           headerTitleAlign: "center",
           tabBarShowLabel: false,
           tabBarIcon: ({ color }) => (
-            <AntDesign name="plus" size={24} color={color} />
+            <AntDesign
+              style={{
+                width: 70,
+                height: 40,
+                backgroundColor: "#FF6C00",
+                borderRadius: 20,
+                textAlign: "center",
+              }}
+              name="plus"
+              size={24}
+              color="#fff"
+            />
           ),
         }}
         component={CreatePostsScreen}
