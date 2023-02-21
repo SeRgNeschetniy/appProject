@@ -19,9 +19,11 @@ import * as SplashScreen from "expo-splash-screen";
 
 import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
+import { authSignInUser, authSignUpUser } from "../redux/auth/authOperation";
+import { useDispatch } from "react-redux";
 
 const initialState = {
-  login: "",
+  nickname: "",
   email: "",
   password: "",
   avatar: null,
@@ -32,6 +34,8 @@ SplashScreen.preventAutoHideAsync();
 export default function RegistrationScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setstate] = useState(initialState);
+
+  const dispatch = useDispatch();
 
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("../assets/fonts/Roboto/Roboto-Regular.ttf"),
@@ -53,9 +57,10 @@ export default function RegistrationScreen({ navigation }) {
     Keyboard.dismiss();
   };
 
-  const onHandleSubmit = () => {
-    console.log(state);
-    navigation.navigate("Home", { screen: "Posts" });
+  const handleSubmit = () => {
+    console.log("StateREG ---->>>", state);
+    dispatch(authSignUpUser(state));
+    //navigation.navigate("Home", { screen: "Posts" });
   };
 
   const handleChooseAvatars = async () => {
@@ -116,10 +121,10 @@ export default function RegistrationScreen({ navigation }) {
               <View>
                 <TextInput
                   style={styles.input}
-                  value={state.login}
+                  value={state.nickname}
                   onFocus={() => setIsShowKeyboard(true)}
                   onChangeText={(value) =>
-                    setstate((prevState) => ({ ...prevState, login: value }))
+                    setstate((prevState) => ({ ...prevState, nickname: value }))
                   }
                   placeholder="Логін"
                 />
@@ -148,7 +153,7 @@ export default function RegistrationScreen({ navigation }) {
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.button}
-                onPress={onHandleSubmit}
+                onPress={handleSubmit}
               >
                 <Text style={styles.textButton}>Зареєструватись</Text>
               </TouchableOpacity>

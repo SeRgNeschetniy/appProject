@@ -16,6 +16,8 @@ import {
 
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import { useDispatch } from "react-redux";
+import { authSignInUser } from "../redux/auth/authOperation";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -27,6 +29,8 @@ const initialState = {
 export default function LoginScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setstate] = useState(initialState);
+
+  const dispatch = useDispatch();
 
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("../assets/fonts/Roboto/Roboto-Regular.ttf"),
@@ -48,9 +52,10 @@ export default function LoginScreen({ navigation }) {
     Keyboard.dismiss();
   };
 
-  const onHandleSubmit = () => {
+  const handleSubmit = () => {
     console.log(state);
-    navigation.navigate("Home");
+    dispatch(authSignInUser(state));
+    //navigation.navigate("Home");
   };
 
   return (
@@ -91,7 +96,7 @@ export default function LoginScreen({ navigation }) {
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.button}
-                onPress={onHandleSubmit}
+                onPress={handleSubmit}
               >
                 <Text style={styles.textButton}>Зайти</Text>
               </TouchableOpacity>

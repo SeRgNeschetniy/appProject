@@ -17,6 +17,7 @@ import CommentsScreen from "./Screens/nestedScreens/CommentsScreen";
 import CreatePostsScreen from "./Screens/CreatePostsScreen";
 import PostsScreen from "./Screens/PostsScreen";
 import ProfileScreen from "./Screens/ProfileScreen";
+import { authSignOutUser } from "./redux/auth/authOperation";
 
 export const useRoute = (isAuth) => {
   if (!isAuth) {
@@ -46,9 +47,7 @@ export const useRoute = (isAuth) => {
           tabBarShowLabel: false,
           tabBarItemStyle: { alignItems: "flex-end" },
           headerRight: () => (
-            <TouchableOpacity
-            // onPress={() => setIsLogin(false)}
-            >
+            <TouchableOpacity onPress={() => authSignOutUser()}>
               <Ionicons
                 style={{ marginRight: 16 }}
                 name="exit-outline"
