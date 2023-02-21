@@ -62,7 +62,7 @@ export default function RegistrationScreen({ navigation }) {
           source={require("../assets/bg.jpg")}
         >
           <View style={styles.form}>
-            <Text style={styles.title}>Регистрация</Text>
+            <Text style={styles.title}>Реєстрація</Text>
             <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
@@ -83,7 +83,7 @@ export default function RegistrationScreen({ navigation }) {
                   onChangeText={(value) =>
                     setstate((prevState) => ({ ...prevState, email: value }))
                   }
-                  placeholder="Адрес электронной почты"
+                  placeholder="Адреса електронної пошти"
                 />
                 <TextInput
                   style={{ ...styles.input, marginBottom: 43 }}
@@ -103,13 +103,13 @@ export default function RegistrationScreen({ navigation }) {
                 style={styles.button}
                 onPress={onHandleSubmit}
               >
-                <Text style={styles.textButton}>Зарегистрироваться</Text>
+                <Text style={styles.textButton}>Зареєструватись</Text>
               </TouchableOpacity>
               <Text
                 style={styles.singin}
                 onPress={() => navigation.navigate("Login")}
               >
-                Уже есть аккаунт? Войти
+                Вже є акаунт? Зайти
               </Text>
             </View>
           </View>
