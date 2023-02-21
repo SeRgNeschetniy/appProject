@@ -11,7 +11,6 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert,
 } from "react-native";
 
 import { useFonts } from "expo-font";
@@ -74,7 +73,7 @@ export default function RegistrationScreen({ navigation }) {
                   onChangeText={(value) =>
                     setstate((prevState) => ({ ...prevState, login: value }))
                   }
-                  placeholder="Логин"
+                  placeholder="Логін"
                 />
                 <TextInput
                   style={styles.input}
