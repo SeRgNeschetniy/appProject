@@ -1,118 +1,16 @@
 import React, { useEffect, useState } from "react";
-import {
-  FlatList,
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebase/config";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllPosts } from "../../redux/dashboard/dashboardOperation";
+import PostList from "../../components/PostsList";
+import { View } from "react-native";
 
 export default function DefaultPostsScreen({ navigation }) {
-  const [posts, setPosts] = useState([]);
-
-  const getAllPosts = async () => {
-    setPosts([]);
-    const querySnapshot = await getDocs(collection(db, "posts"));
-    querySnapshot.forEach((doc) => {
-      setPosts((prevState) => [...prevState, { ...doc.data(), id: doc.id }]);
-    });
-  };
+  const { posts } = useSelector((state) => state.dashboard);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getAllPosts();
-  }, []);
+    dispatch(getAllPosts());
+  }, [dispatch]);
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={posts}
-        renderItem={({ item }) => (
-          <View style={styles.itemContainer}>
-            <Image
-              source={{ uri: item.photo }}
-              style={{
-                width: "100%",
-                height: 240,
-                borderRadius: 8,
-                marginBottom: 8,
-              }}
-            />
-            <Text style={{ marginBottom: 11 }}>{item.title}</Text>
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Ionicons
-                  name="chatbubble-outline"
-                  size={24}
-                  color="#BDBDBD"
-                  onPress={() => navigation.navigate("Comments", { item })}
-                />
-                <Text
-                  style={{
-                    color: "#BDBDBD",
-                  }}
-                >
-                  0
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Ionicons
-                  name="location-outline"
-                  size={24}
-                  color="#BDBDBD"
-                  onPress={() =>
-                    navigation.navigate("Map", {
-                      location: item.locationCoords,
-                      title: item.title,
-                    })
-                  }
-                />
-                <Text
-                  style={{
-                    color: "#000",
-                    textDecorationLine: "underline",
-                  }}
-                >
-                  {item.location}
-                </Text>
-              </View>
-            </View>
-          </View>
-        )}
-        keyExtractor={(item) => item.id}
-      />
-    </SafeAreaView>
-  );
+  return <PostList posts={posts} navigation={navigation} />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fff",
-  },
-  itemContainer: {
-    marginBottom: 34,
-  },
-});

@@ -17,8 +17,9 @@ import { db } from "../firebase/config";
 
 import { Ionicons } from "@expo/vector-icons";
 import { authSignOutUser } from "../redux/auth/authOperation";
+import PostList from "../components/PostsList";
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   const { avatar, userId, nickname } = useSelector((state) => state.auth);
 
   const [posts, setPosts] = useState([]);
@@ -103,82 +104,7 @@ export default function ProfileScreen() {
             )}
           </View>
           <Text style={styles.nickname}>{nickname}</Text>
-          <SafeAreaView style={styles.container}>
-            <FlatList
-              data={posts}
-              renderItem={({ item }) => (
-                <View style={styles.item}>
-                  <Image
-                    source={{ uri: item.photo }}
-                    style={{
-                      width: "100%",
-                      height: 240,
-                      borderRadius: 8,
-                      marginBottom: 8,
-                    }}
-                  />
-                  <Text style={{ marginBottom: 11 }}>{item.title}</Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Ionicons
-                        name="chatbubble-outline"
-                        size={24}
-                        color="#BDBDBD"
-                        onPress={() =>
-                          navigation.navigate("Comments", { item })
-                        }
-                      />
-                      <Text
-                        style={{
-                          color: "#BDBDBD",
-                        }}
-                      >
-                        0
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Ionicons
-                        name="location-outline"
-                        size={24}
-                        color="#BDBDBD"
-                        onPress={() =>
-                          navigation.navigate("Map", {
-                            location: item.locationCoords,
-                            title: item.title,
-                          })
-                        }
-                      />
-                      <Text
-                        style={{
-                          color: "#000",
-                          textDecorationLine: "underline",
-                        }}
-                      >
-                        {item.location}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              )}
-              keyExtractor={(item) => item.id}
-            />
-          </SafeAreaView>
+          <PostList posts={posts} navigation={navigation} />
         </View>
       </ImageBackground>
     </View>
@@ -227,5 +153,4 @@ const styles = StyleSheet.create({
     fontSize: 33,
     lineHeight: 35,
   },
-  item: { marginBottom: 34 },
 });

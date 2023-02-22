@@ -196,7 +196,7 @@ export default function CreatePostsScreen({ navigation }) {
           style={styles.button}
           onPress={sendPost}
         >
-          <Text style={styles.textButton}>Опублікувати</Text>
+          <Text style={{ color: "#fff" }}>Опублікувати</Text>
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
@@ -241,8 +241,7 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 16,
-    color: "#BDBDBD",
-    backgroundColor: "#F6F6F6",
+    backgroundColor: "#FF6C00",
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
