@@ -1,4 +1,4 @@
-import { auth } from "../../firebase/config";
+import { auth, storage } from "../../firebase/config";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 
 import { authSlice } from "./authReducer";
+import { getDownloadURL, uploadBytes } from "firebase/storage";
 
 const { updateUserProfile, authSignOut, authStateChage } = authSlice.actions;
 
@@ -18,16 +19,17 @@ export const authSignUpUser =
       .then(() => {
         updateProfile(auth.currentUser, {
           displayName: nickname,
-          // photoURL: "https://example.com/jane-q-user/profile.jpg",
+          //photoURL: avatar,
         })
           .then(() => {
-            const { uid, displayName, email } = auth.currentUser;
+            const { uid, displayName, email, photoURL } = auth.currentUser;
 
             dispath(
               updateUserProfile({
                 userId: uid,
                 nickname: displayName,
                 email: email,
+                avatar: photoURL,
               })
             );
           })

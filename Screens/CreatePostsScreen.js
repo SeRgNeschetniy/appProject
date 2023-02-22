@@ -111,20 +111,6 @@ export default function CreatePostsScreen({ navigation }) {
       console.error("error.code", erorr.code);
       console.error("error.message", erorr.message);
     }
-
-    // uploadBytes(storageRef, file)
-    //   .then((snapshot) => {
-    //     getDownloadURL(snapshot.ref).then((downloadURL) => {
-    //       setState((prevState) => ({
-    //         ...prevState,
-    //         photo: downloadURL,
-    //       }));
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     console.error("error.code", error.code);
-    //     console.error("error.message", error.message);
-    //   });
   };
 
   const uploadPostToServer = async () => {

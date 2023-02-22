@@ -36,7 +36,7 @@ export default function DefaultPostsScreen({ navigation }) {
             <Image
               source={{ uri: item.photo }}
               style={{
-                width: 380,
+                width: "100%",
                 height: 240,
                 borderRadius: 8,
                 marginBottom: 8,
@@ -59,7 +59,7 @@ export default function DefaultPostsScreen({ navigation }) {
                   name="chatbubble-outline"
                   size={24}
                   color="#BDBDBD"
-                  onPress={() => navigation.navigate("Comments")}
+                  onPress={() => navigation.navigate("Comments", { item })}
                 />
                 <Text
                   style={{

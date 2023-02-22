@@ -21,6 +21,7 @@ import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
 import { authSignInUser, authSignUpUser } from "../redux/auth/authOperation";
 import { useDispatch } from "react-redux";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const initialState = {
   nickname: "",
@@ -57,10 +58,11 @@ export default function RegistrationScreen({ navigation }) {
     Keyboard.dismiss();
   };
 
-  const handleSubmit = () => {
-    console.log("StateREG ---->>>", state);
+  const handleSubmit = async () => {
+    // const avatarUpload = await uploadImageToServer();
+    // setstate((prevState) => ({ ...prevState, avatar: avatarUpload }));
+    // console.log("state", state);
     dispatch(authSignUpUser(state));
-    //navigation.navigate("Home", { screen: "Posts" });
   };
 
   const handleChooseAvatars = async () => {
