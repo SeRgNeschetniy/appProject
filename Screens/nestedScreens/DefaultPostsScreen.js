@@ -12,10 +12,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
-export default function DefaultPostsScreen({ route, navigation }) {
+export default function DefaultPostsScreen({ navigation }) {
   const [posts, setPosts] = useState([]);
 
   const getAllPosts = async () => {
+    setPosts([]);
     const querySnapshot = await getDocs(collection(db, "posts"));
     querySnapshot.forEach((doc) => {
       setPosts((prevState) => [...prevState, { ...doc.data(), id: doc.id }]);
