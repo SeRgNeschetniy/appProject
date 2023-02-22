@@ -9,19 +9,22 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase/config";
 
 export default function DefaultPostsScreen({ route, navigation }) {
   const [posts, setPosts] = useState([]);
 
-  const post = route.params;
+  const getAllPosts = async () => {
+    const querySnapshot = await getDocs(collection(db, "posts"));
+    querySnapshot.forEach((doc) => {
+      setPosts((prevState) => [...prevState, { ...doc.data(), id: doc.id }]);
+    });
+  };
 
   useEffect(() => {
-    if (post) {
-      setPosts((prevState) => [...prevState, post]);
-    }
-  }, [post]);
-
-  console.log(posts);
+    getAllPosts();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -76,7 +79,12 @@ export default function DefaultPostsScreen({ route, navigation }) {
                   name="location-outline"
                   size={24}
                   color="#BDBDBD"
-                  onPress={() => navigation.navigate("Map", { post })}
+                  onPress={() =>
+                    navigation.navigate("Map", {
+                      location: item.location,
+                      title: item.title,
+                    })
+                  }
                 />
                 <Text
                   style={{
@@ -90,7 +98,7 @@ export default function DefaultPostsScreen({ route, navigation }) {
             </View>
           </View>
         )}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item) => item.id}
       />
     </SafeAreaView>
   );

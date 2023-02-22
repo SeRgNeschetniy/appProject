@@ -17,13 +17,16 @@ import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 
 import { Ionicons } from "@expo/vector-icons";
+import { db, storage } from "../firebase/config";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
+import { collection, addDoc } from "firebase/firestore";
+import { useSelector } from "react-redux";
 
 const initialState = {
-  photo: null,
   title: "",
   location: "",
-  latitude: "",
-  longitude: "",
+  locationCoords: "",
 };
 
 export default function CreatePostsScreen({ navigation }) {
@@ -31,7 +34,10 @@ export default function CreatePostsScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [camera, setCamera] = useState(null);
-  const [state, setstate] = useState(initialState);
+  const [photoTmp, setPhotoTmp] = useState(null);
+  const [state, setState] = useState(initialState);
+
+  const { userId, nickname } = useSelector((state) => state.auth);
 
   useEffect(() => {
     (async () => {
@@ -59,20 +65,15 @@ export default function CreatePostsScreen({ navigation }) {
   }
 
   const takePhoto = async () => {
-    const photo = await camera.takePictureAsync();
+    const photoCamera = await camera.takePictureAsync();
     const location = await Location.getCurrentPositionAsync();
 
-    setstate((prevState) => ({
-      ...prevState,
-      photo: photo.uri,
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    }));
-  };
+    setPhotoTmp(photoCamera.uri);
 
-  const sendPost = () => {
-    console.log("photo", state);
-    navigation.navigate("DefaultScreen", state);
+    setState((prevState) => ({
+      ...prevState,
+      locationCoords: location.coords,
+    }));
   };
 
   const keyboardHide = () => {
@@ -87,10 +88,57 @@ export default function CreatePostsScreen({ navigation }) {
     });
 
     if (!result.canceled) {
-      setstate((prevState) => ({
-        ...prevState,
-        photo: result.assets[0].uri,
-      }));
+      setPhotoTmp(result.assets[0].uri);
+    }
+  };
+
+  const sendPost = async () => {
+    await uploadPostToServer();
+    navigation.navigate("DefaultScreen");
+  };
+
+  const uploadImageToServer = async () => {
+    const response = await fetch(photoTmp);
+    const file = await response.blob();
+    const uniqPostId = Date.now().toString();
+    const storageRef = ref(storage, `postImages/${uniqPostId}`);
+
+    try {
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      return downloadURL;
+    } catch (erorr) {
+      console.error("error.code", erorr.code);
+      console.error("error.message", erorr.message);
+    }
+
+    // uploadBytes(storageRef, file)
+    //   .then((snapshot) => {
+    //     getDownloadURL(snapshot.ref).then((downloadURL) => {
+    //       setState((prevState) => ({
+    //         ...prevState,
+    //         photo: downloadURL,
+    //       }));
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     console.error("error.code", error.code);
+    //     console.error("error.message", error.message);
+    //   });
+  };
+
+  const uploadPostToServer = async () => {
+    try {
+      const downloadURL = await uploadImageToServer();
+      const docRef = await addDoc(collection(db, "posts"), {
+        ...state,
+        userId,
+        nickname,
+        photo: downloadURL,
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
     }
   };
 
@@ -98,10 +146,10 @@ export default function CreatePostsScreen({ navigation }) {
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
         <Camera style={styles.camera} type={type} ref={setCamera}>
-          {state.photo && (
+          {photoTmp && (
             <View style={styles.takePhotoContainer}>
               <Image
-                source={{ uri: state.photo }}
+                source={{ uri: photoTmp }}
                 style={{ height: 240, width: 380 }}
               />
             </View>
@@ -141,7 +189,7 @@ export default function CreatePostsScreen({ navigation }) {
             placeholder="Назва..."
             value={state.title}
             onChangeText={(value) =>
-              setstate((prevState) => ({ ...prevState, title: value }))
+              setState((prevState) => ({ ...prevState, title: value }))
             }
           />
 
@@ -152,7 +200,7 @@ export default function CreatePostsScreen({ navigation }) {
             placeholder="Місцевість..."
             value={state.location}
             onChangeText={(value) =>
-              setstate((prevState) => ({ ...prevState, location: value }))
+              setState((prevState) => ({ ...prevState, location: value }))
             }
           />
         </KeyboardAvoidingView>
