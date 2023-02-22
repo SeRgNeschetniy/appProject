@@ -82,7 +82,7 @@ export default function DefaultPostsScreen({ navigation }) {
                   color="#BDBDBD"
                   onPress={() =>
                     navigation.navigate("Map", {
-                      location: item.location,
+                      location: item.locationCoords,
                       title: item.title,
                     })
                   }
