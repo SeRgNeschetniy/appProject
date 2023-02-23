@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "appProject",
-    "slug": "appProject",
+    "name": "rn-social",
+    "slug": "rn-social",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -26,6 +26,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0bea3a0a-b133-46e9-b119-29499db203b2"
+      }
+    },
+    "owner": "itplpro"
   }
 }
