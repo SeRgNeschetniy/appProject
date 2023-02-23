@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const state = {
   posts: [],
   userPosts: [],
+  comments: [],
 };
 
 export const dashboardSlice = createSlice({
@@ -18,6 +19,12 @@ export const dashboardSlice = createSlice({
     createPost: (state, { payload }) => {
       state.posts.unshift(payload);
       state.userPosts.unshift(payload);
+    },
+    getComments: (state, { payload }) => {
+      state.comments = payload;
+    },
+    addComment: (state, { payload }) => {
+      state.comments.unshift(payload);
     },
   },
 });

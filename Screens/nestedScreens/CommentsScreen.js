@@ -11,46 +11,35 @@ import {
 import React, { useEffect, useState } from "react";
 
 import { AntDesign } from "@expo/vector-icons";
+import { serverTimestamp } from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  addDoc,
-  collection,
-  doc,
-  getDocs,
-  serverTimestamp,
-  setDoc,
-} from "firebase/firestore";
-import { useSelector } from "react-redux";
-import { db } from "../../firebase/config";
+  getAllCommets,
+  sendComment,
+} from "../../redux/dashboard/dashboardOperation";
 
 export default function CommentsScreen({ route }) {
   const { nickname, userId } = useSelector((state) => state.auth);
   const { id: postId, photo } = route.params.item;
 
-  const [comments, setComments] = useState([]);
+  const { comments } = useSelector((state) => state.dashboard);
   const [comment, setComment] = useState("");
 
-  const sendComment = async () => {
-    const commentRef = doc(db, "posts", postId);
-    await addDoc(collection(commentRef, "comments"), {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllCommets(postId));
+  }, [dispatch]);
+
+  const handleSubmit = () => {
+    const data = {
       comment: comment,
       userId: userId,
       nickname: nickname,
       dateCreate: serverTimestamp(),
-    });
+    };
+    dispatch(sendComment({ postId, data }));
   };
-
-  const getAllCommets = async () => {
-    setComments([]);
-    const commentRef = doc(db, "posts", postId);
-    const querySnapshot = await getDocs(collection(commentRef, "comments"));
-    querySnapshot.forEach((doc) => {
-      setComments((prevState) => [...prevState, { ...doc.data(), id: doc.id }]);
-    });
-  };
-
-  useEffect(() => {
-    getAllCommets();
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -80,7 +69,7 @@ export default function CommentsScreen({ route }) {
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.button}
-          onPress={sendComment}
+          onPress={handleSubmit}
         >
           <AntDesign name="arrowup" size={24} color="#fff" />
         </TouchableOpacity>
