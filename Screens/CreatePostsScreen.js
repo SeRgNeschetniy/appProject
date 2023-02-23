@@ -21,7 +21,9 @@ import { db, storage } from "../firebase/config";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import { collection, addDoc } from "firebase/firestore";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { uploadImageToServer } from "../services/uploadImageToServer";
+import { createPostUser } from "../redux/dashboard/dashboardOperation";
 
 const initialState = {
   title: "",
@@ -29,7 +31,16 @@ const initialState = {
   locationCoords: "",
 };
 
-export default function CreatePostsScreen({ navigation }) {
+export default function CreatePostsScreen({ route, navigation }) {
+  // const { item } = route.params;
+
+  // useEffect(() => {
+  //   if (item) {
+  //     setState(item);
+  //     setPhotoTmp(item.photo);
+  //   }
+  // }, [route.params]);
+
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
@@ -38,6 +49,7 @@ export default function CreatePostsScreen({ navigation }) {
   const [state, setState] = useState(initialState);
 
   const { userId, nickname } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
@@ -93,39 +105,18 @@ export default function CreatePostsScreen({ navigation }) {
   };
 
   const sendPost = async () => {
-    await uploadPostToServer();
+    const downloadURL = await uploadImageToServer("posts", photoTmp);
+
+    const post = {
+      ...state,
+      userId,
+      nickname,
+      photo: downloadURL,
+    };
+
+    dispatch(createPostUser({ post }));
+
     navigation.navigate("DefaultScreen");
-  };
-
-  const uploadImageToServer = async () => {
-    const response = await fetch(photoTmp);
-    const file = await response.blob();
-    const uniqPostId = Date.now().toString();
-    const storageRef = ref(storage, `postImages/${uniqPostId}`);
-
-    try {
-      const snapshot = await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(storageRef);
-      return downloadURL;
-    } catch (erorr) {
-      console.error("error.code", erorr.code);
-      console.error("error.message", erorr.message);
-    }
-  };
-
-  const uploadPostToServer = async () => {
-    try {
-      const downloadURL = await uploadImageToServer();
-      const docRef = await addDoc(collection(db, "posts"), {
-        ...state,
-        userId,
-        nickname,
-        photo: downloadURL,
-      });
-      console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
   };
 
   return (

@@ -20,7 +20,7 @@ import ProfileScreen from "./Screens/ProfileScreen";
 import { authSignOutUser } from "./redux/auth/authOperation";
 import { useDispatch } from "react-redux";
 
-export const useRoute = (isAuth) => {
+export const useRoute = (isAuth, navigation) => {
   if (!isAuth) {
     return (
       <MainStack.Navigator initialRouteName="Login">
@@ -43,7 +43,7 @@ export const useRoute = (isAuth) => {
   };
 
   return (
-    <MainTab.Navigator>
+    <MainTab.Navigator options={{ headerBackVisible: true }}>
       <MainTab.Screen
         name="Posts"
         options={{
@@ -73,6 +73,16 @@ export const useRoute = (isAuth) => {
         options={{
           title: "Створити публікацію",
           headerTitleAlign: "center",
+          headerBackVisible: true,
+          // headerLeft: () => (
+          //   // <DrawerButton arrowleft onPress={() => navigation.toggleDrawer()} />
+          //   <Ionicons
+          //     name="arrow-back"
+          //     size={24}
+          //     color="#000"
+          //     onPress={() => navigation.toggleDrawer()}
+          //   />
+          // ),
           tabBarShowLabel: false,
           tabBarIcon: ({ color }) => (
             <AntDesign

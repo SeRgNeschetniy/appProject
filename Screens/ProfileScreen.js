@@ -18,47 +18,37 @@ import { db } from "../firebase/config";
 import { Ionicons } from "@expo/vector-icons";
 import { authSignOutUser } from "../redux/auth/authOperation";
 import PostList from "../components/PostsList";
+import { getAllUserPosts } from "../redux/dashboard/dashboardOperation";
 
 export default function ProfileScreen({ navigation }) {
   const { avatar, userId, nickname } = useSelector((state) => state.auth);
+  const { userPosts } = useSelector((state) => state.dashboard);
 
-  const [posts, setPosts] = useState([]);
-
-  const getAllPosts = async () => {
-    setPosts([]);
-
-    const q = query(collection(db, "posts"), where("userId", "==", userId));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      setPosts((prevState) => [...prevState, { ...doc.data(), id: doc.id }]);
-    });
-  };
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getAllPosts();
-  }, []);
+    dispatch(getAllUserPosts(userId));
+  }, [dispatch]);
 
   const handleChooseAvatars = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [3, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setstate((prevState) => ({
-        ...prevState,
-        avatar: result.assets[0].uri,
-      }));
-    }
+    // let result = await ImagePicker.launchImageLibraryAsync({
+    //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //   allowsEditing: true,
+    //   aspect: [3, 3],
+    //   quality: 1,
+    // });
+    // if (!result.canceled) {
+    //   setstate((prevState) => ({
+    //     ...prevState,
+    //     avatar: result.assets[0].uri,
+    //   }));
+    // }
   };
 
   const handleDeleteAvatars = () => {
-    setstate((prevState) => ({ ...prevState, avatar: null }));
+    // setstate((prevState) => ({ ...prevState, avatar: null }));
   };
 
-  const dispatch = useDispatch();
   const signOut = () => {
     dispatch(authSignOutUser());
   };
@@ -104,7 +94,7 @@ export default function ProfileScreen({ navigation }) {
             )}
           </View>
           <Text style={styles.nickname}>{nickname}</Text>
-          <PostList posts={posts} navigation={navigation} />
+          <PostList posts={userPosts} navigation={navigation} />
         </View>
       </ImageBackground>
     </View>
@@ -140,7 +130,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   form: {
-    flex: 0.8,
+    flex: 0.85,
     alignItems: "center",
     backgroundColor: "#fff",
     borderTopLeftRadius: 25,
